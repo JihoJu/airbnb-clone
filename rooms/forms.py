@@ -1,6 +1,5 @@
 from django import forms
 from django_countries.fields import CountryField
-from pkg_resources import require
 from . import models
 
 

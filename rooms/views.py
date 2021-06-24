@@ -1,15 +1,8 @@
-from django.core import paginator
 from django.views.generic import ListView, DetailView, View
-from django.shortcuts import redirect, render
+from django.shortcuts import render
+from django_countries import countries
 from django.core.paginator import Paginator
 from . import models, forms
-
-# from django_countries import countries
-
-# import rooms
-
-# from django.http import Http404
-# from django.urls import reverse
 
 
 class HomeView(ListView):
@@ -44,11 +37,7 @@ class RoomDetail(DetailView):
 
 
 class SearchView(View):
-
-    """SearchView Definition"""
-
     def get(self, request):
-
         country = request.GET.get("country")
 
         if country:
@@ -108,55 +97,18 @@ class SearchView(View):
                 qs = models.Room.objects.filter(**filter_args).order_by("-created")
 
                 paginator = Paginator(qs, 10, orphans=5)
+
                 page = request.GET.get("page", 1)
+
                 rooms = paginator.get_page(page)
+
                 return render(
-                    request, "rooms/search.html", context={"form": form, "rooms": rooms}
+                    request,
+                    "rooms/search.html",
+                    {"form": form, "rooms": rooms},
                 )
 
         else:
             form = forms.SearchForm()
 
-        return render(request, "rooms/search.html", context={"form": form})
-
-    # form = forms.SearchForm(request.GET)
-    """# print(request.GET) 이해 안감...
-    city = request.GET.get("city", "Anywhere")
-    city = str.capitalize(city)
-    country = request.GET.get("country", "KR")
-    room_type = int(request.GET.get("room_type", 0))
-    price = int(request.GET.get("price", 0))
-    guests = int(request.GET.get("guests", 0))
-    bedrooms = int(request.GET.get("bedrooms", 0))
-    beds = int(request.GET.get("beds", 0))
-    baths = int(request.GET.get("baths", 0))
-    instant = bool(request.GET.get("instant", False))
-    superhost = bool(request.GET.get("superhost", False))
-    s_amenities = request.GET.getlist("amenities")
-    s_facilities = request.GET.getlist("facilities")
-
-    form = {
-        "city": city,
-        "s_country": country,
-        "s_room_type": room_type,
-        "price": price,
-        "guests": guests,
-        "bedrooms": bedrooms,
-        "beds": beds,
-        "baths": baths,
-        "s_amenities": s_amenities,
-        "s_facilities": s_facilities,
-        "instant": instant,
-        "superhost": superhost,
-    }
-
-    room_types = models.RoomType.objects.all()
-    amenities = models.Amenity.objects.all()
-    facilities = models.Facility.objects.all()
-
-    choices = {
-        "countries": countries,
-        "room_types": room_types,
-        "amenities": amenities,
-        "facilities": facilities,
-    }"""
+        return render(request, "rooms/search.html", {"form": form})
