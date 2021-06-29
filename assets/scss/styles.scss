@@ -40,6 +40,41 @@ form {
         }
     }
 }
+
+@keyframes messageFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    5% {
+        opacity: 1;
+        transform: translateY(50px);
+    }
+    95% {
+        opacity: 1;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+
+.message {
+    animation: messageFadeIn 5s ease-in-out forwards;
+    &.error {
+        @apply bg-red-600;
+    }
+    &.info {
+        @apply bg-blue-500;
+    }
+    &.success {
+        @apply bg-green-500;
+    }
+    &.warning {
+        @apply bg-yellow-400;
+    }
+}
 //.input이랑 .has_error가 붙어있으면 같이 쓰였다는 것을 뜻함. 중간에 스페이스 => input 안에 has_error가 있다는 것을 뜻함!
 form .input.has_error {
 }
