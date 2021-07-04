@@ -6,6 +6,7 @@ from django.views.generic import FormView, DetailView, UpdateView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -194,26 +195,53 @@ class UpdatePasswordView(
     form_class = forms.UpdatePasswordForm
     success_message = "Password Updated"
 
-    # urls.py에서 lazy_reverse를 해줄 수 있고 이런 방법도 있다는 것!!
-    # def get_success_url(self):
-    #     return self.request.user.get_absolute_url()
 
-    # 이런 방법도 있지만 더 좋은 balance는 위와 같이 form을 따로 만드는 것!!
-    # def get_form(self, form_class=None):
-    #     form = super().get_form(form_class=form_class)
-    #     form.fields["old_password"].widget.attrs = {"placeholder": "Current Password"}
-    #     form.fields["new_password1"].widget.attrs = {"placeholder": "New Password"}
-    #     form.fields["new_password2"].widget.attrs = {
-    #         "placeholder": "Confirm New Password"
-    #     }
-    #     return form
+@login_required
+def switch_hosting(request):
+    try:
+        del request.session["is_hosting"]
+    except KeyError:
+        request.session["is_hosting"] = True
+    return redirect(reverse("core:home"))
 
-    # email을 바꾸면서 username 도 같이 바꾸는 방법!!
-    # def form_valid(self, form):
-    #     email = form.cleaned_data.get("email")
-    #     self.object.username = email
-    #     self.object.save()
-    #     return super().form_valid(form)
+
+""" def switch_hosting말고 이런 방법도 있다.
+@login_required
+def start_host(request):
+
+    request.session["is_hosting"] = True
+    return redirect(reverse("core:home"))
+
+
+@login_required
+def stop_guest(request):
+    # request.session.pop("is_hosting", True)
+    try:
+        del request.session["member_id"]
+    except KeyError:
+        pass
+    return redirect(reverse("core:home")) """
+
+# urls.py에서 lazy_reverse를 해줄 수 있고 이런 방법도 있다는 것!!
+# def get_success_url(self):
+#     return self.request.user.get_absolute_url()
+
+# 이런 방법도 있지만 더 좋은 balance는 위와 같이 form을 따로 만드는 것!!
+# def get_form(self, form_class=None):
+#     form = super().get_form(form_class=form_class)
+#     form.fields["old_password"].widget.attrs = {"placeholder": "Current Password"}
+#     form.fields["new_password1"].widget.attrs = {"placeholder": "New Password"}
+#     form.fields["new_password2"].widget.attrs = {
+#         "placeholder": "Confirm New Password"
+#     }
+#     return form
+
+# email을 바꾸면서 username 도 같이 바꾸는 방법!!
+# def form_valid(self, form):
+#     email = form.cleaned_data.get("email")
+#     self.object.username = email
+#     self.object.save()
+#     return super().form_valid(form)
 
 
 """ class LoginView(View):
