@@ -107,6 +107,10 @@ form {
     justify-items: center;
 }
 
+.cal-number {
+    @apply w-full text-center rounded p-1 cursor-pointer;
+}
+
 //.input이랑 .has_error가 붙어있으면 같이 쓰였다는 것을 뜻함. 중간에 스페이스 => input 안에 has_error가 있다는 것을 뜻함!
 form .input.has_error {
 }
